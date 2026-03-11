@@ -17,3 +17,6 @@ typedef struct {
 } registry_t;
 
 #endif
+
+// TODO
+// I haven't actually written registries yet

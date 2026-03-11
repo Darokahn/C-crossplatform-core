@@ -41,7 +41,7 @@ struct letterSet {
 const extern struct letter* const letters;
 const extern struct letterSet basicFont;
 
-int drawString(char* string, rect_t* rect, const struct letterSet font, pixel_t color, pixel_t backgroundColor);
+int drawString(char* string, rect_t* rect, const struct letterSet font, pixel_t color, pixel_t backgroundColor, int charWidth, int charHeight);
 
 typedef struct {
     int16_t id;

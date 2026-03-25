@@ -79,9 +79,11 @@ bool rectsCollide(rect_t r1, rect_t r2) {
 }
 
 void reportAllCollisions(interface collision* all) {
+    // TODO
 }
 
 void getCollisions(interface collision this, interface collision* others, int numOthers) {
+    // TODO
 }
 
 bool collidesWith(interface collision this, interface collision other) {

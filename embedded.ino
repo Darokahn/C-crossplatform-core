@@ -156,11 +156,7 @@ extern "C" int getInput(int index) {
     return inputs[index];
 }
 
-void pollInputs(inputStruct_t* inputs) {
-    inputs->yAxis = getInput(2) - getInput(0);
-    inputs->xAxis = getInput(3) - getInput(1);
-    inputs->action1 = getInput(4);
-    inputs->action2 = getInput(5);
+void pollInputs() {
 }
 
 int getSeed() {

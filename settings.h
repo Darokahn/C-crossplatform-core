@@ -13,6 +13,7 @@
 #define DRAWINGMAX 16
 #define PHYSICSMAX 16
 
-#define AXISMAX 4096
-#define AXISMID 2048
-#define AXISMIN 0
+#define NUMSCANCODES 284
+#define CONTROLLERSIZE 32 // 2 axes, 14 buttons = 16; x2 for future-proofing.
+#define CONTROLLERMAX 16
+#define INPUTSPACE (NUMSCANCODES + CONTROLLERSIZE * CONTROLLERMAX)

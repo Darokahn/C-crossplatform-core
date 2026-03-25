@@ -1,12 +1,15 @@
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
+#include <stddef.h>
 #include <time.h>
+#include <stdlib.h>
 
 #include "settings.h"
 #include "gameObjects.h"
 #include "sdl_wrapper.h"
 #include "iofuncs.h"
+#include "inputs.h"
 
 pixel_t black = {.r=0, .g=0, .b=0};
 struct screenPackage s;
@@ -18,9 +21,32 @@ void startIO(int screenWidth, int screenHeight, int fps) {
     globalfps = fps;
     s = initVideo(SCREENWIDTH, SCREENHEIGHT, 64, 3);
     nextTick = SDL_GetTicks() + (1000 / fps);
+    initInputs();
+}
+
+const int KEYBOARDID = 0;
+void pollInputs() {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT) {
+            exit(0);
+        }
+        int active;
+        if (e.type == SDL_KEYDOWN) {
+            active = 1;
+        }
+        else if (e.type == SDL_KEYUP) {
+            active = 0;
+        }
+        else continue;
+        int scancode = e.key.keysym.scancode;
+        int deviceId = KEYBOARDID;
+        sendEvent(deviceId, scancode, active);
+    }
 }
 
 void updateIO() {
+    pollInputs();
     updateScreen(s);
 }
 
@@ -96,38 +122,6 @@ void awaitNextTick() {
     // busy wait is fine because the desktop binding is mainly meant to test for the embedded binding
     while (SDL_GetTicks() < nextTick);
     nextTick += 1000 / globalfps;
-}
-
-void pollInputs(inputStruct_t* input) {
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_QUIT) {
-            exit(0);
-        }
-        else if (e.type == SDL_KEYDOWN) {
-            SDL_Keycode k = e.key.keysym.sym;
-            bool repeat = e.key.repeat;
-            if (k == SDLK_RIGHT && !repeat) input->xAxis += AXISMID;
-            else if (k == SDLK_LEFT && !repeat) input->xAxis -= AXISMID;
-
-            else if (k == SDLK_UP && !repeat) input->yAxis += AXISMID;
-            else if (k == SDLK_DOWN && !repeat) input->yAxis -= AXISMID;
-
-            else if (k == SDLK_z) input->action2 = true;
-            else if (k == SDLK_x) input->action1 = true;
-        }
-        else if (e.type == SDL_KEYUP) {
-            SDL_Keycode k = e.key.keysym.sym;
-            if (k == SDLK_RIGHT) input->xAxis -= AXISMID;
-            else if (k == SDLK_LEFT) input->xAxis += AXISMID;
-
-            if (k == SDLK_UP) input->yAxis -= AXISMID;
-            else if (k == SDLK_DOWN) input->yAxis += AXISMID;
-
-            if (k == SDLK_z) input->action2 = false;
-            else if (k == SDLK_x) input->action1 = false;
-        }
-    }
 }
 
 int getSeed() {
